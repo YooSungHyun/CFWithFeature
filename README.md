@@ -9,6 +9,7 @@ https://papers.nips.cc/paper/2017/hash/dbd22ba3bd0df8f385bdac3e9f8be207-Abstract
 
 논문의 구현체에서는 Cold User, Cold Item 을 위한 Data Dropout을 진행하는데, 현재 구현체에서는 제공되지 않으며 아마 이 때문에 원본 복구에만 급급해서, 성능이 조금 떨어지는 경향이 있는 것 같습니다. 즉, 봤던거 위주로 예측해줍니다. </br>
 저는 Neural CF를 사용해서, WMF를 진행하는 소스와 해당하는 값을 임베딩에 매핑하는 기능은 제공하지 않습니다. 다만, Neural CF 형태로 학습된 User Item 임베딩이 있다면, 그것을 load해서 사용하는 것으로 처리됩니다. </br>
+WMF를 쓰고싶은 분들을 위해 팁을 드리면, WMF으로 분해된 행렬의 값은 결국 딥러닝에서의 임베딩과 동일한 맥락이므로, 그런 경우에는 WMF 값을 그대로 불러와 본인의 user idx로 lookup한다음 모델의 input으로 넣고, 제가 구현해놓은 모델에서의 embedding은 사용하시면 안됩니다. 이런 경우 load_checkpoint를 하여, fine-tuning처럼 접근하면 안됩니다. </br>
 
 Dropout을 적절히 진행해서, Perplexity를 높히는게 중요할 것 같은데, DropoutNet에서 Output인 내적값(WMF의 R_Matrix)을 구하는 과정을 단순 행렬곱으로 처리하지 않고, Denoising AutoEncoder를 사용하는 것으로, 데이터에 변화를 주지 않고도 유사한 성능을 내게 만들 수 있지 않을까 하는 아이디어 정도는 가지고 있습니다. </br>
 
