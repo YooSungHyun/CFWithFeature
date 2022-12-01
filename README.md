@@ -13,5 +13,6 @@ WMF를 쓰고싶은 분들을 위해 팁을 드리면, WMF으로 분해된 행�
 
 Dropout을 적절히 진행해서, Perplexity를 높히는게 중요할 것 같은데, DropoutNet에서 Output인 내적값(WMF의 R_Matrix)을 구하는 과정을 단순 행렬곱으로 처리하지 않고, Denoising AutoEncoder를 사용하는 것으로, 데이터에 변화를 주지 않고도 유사한 성능을 내게 만들 수 있지 않을까 하는 아이디어 정도는 가지고 있습니다. </br>
 
-구현은 DropoutNet의 구현체인 https://github.com/layer6ai-labs/DropoutNet 를 참고하였습니다.
-
+구현은 DropoutNet의 구현체인 https://github.com/layer6ai-labs/DropoutNet 를 참고하였습니다. </br>
+코드의 TODO 부분은 하드코딩이어서 꼭 체크해야 하는 부분이거나, 각 사용자의 원하는 Data Form을 알 수 없으므로 직접 구현해야하는 코드블럭입니다. </br>
+꼭 확인하시어, 기본적인 코드작업은 필수라는 점을 기억해주시기 바랍니다.
