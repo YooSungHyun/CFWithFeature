@@ -56,7 +56,7 @@ class DropNetDataModule(pl.LightningDataModule):
 
     def prepare_data(self):
         if not os.path.isfile("./valid.pt"):
-            # Dropoutnet은 R matrix를 복원하는 학습이므로, 기존에 WMF or NeuralMF를 통해 만든 R_Matrix를 가져오십시오
+            # TODO Dropoutnet은 R matrix를 복원하는 학습이므로, 기존에 WMF or NeuralMF를 통해 만든 R_Matrix를 가져오십시오
             # 해당 matrix는 통상적이라면, 유저에 대한 아이템 구매 혹은 시청 여부 이력의 Sparse를 이용해 만들어진 WMF or NeuralMF의 최종 Output Matrix일 것입니다.
             r_matrix = np.load(self.data_dir)
             one_user_item_info = list()

@@ -57,6 +57,8 @@ class DropNet(pl.LightningModule):
         self.layer_dim = args.layer_dim
         self.dropout = args.dropout
 
+        # TODO: WMF를 사용한 값으로 활용할 경우, 해당 데이터는 WMF로 학습된 User로 분해된 User X Hidden 값 그대로가 됩니다.
+        # 즉 임베딩이 없어야 한다는 말입니다.
         self.Uin = nn.Embedding(num_embeddings=self.n_users, embedding_dim=self.emb_dim)
         self.u_dense_batch_fc_tanh = nn.Sequential(
             nn.Linear(self.emb_dim + args.n_users_features, args.finetuning_hidden_size),
@@ -68,6 +70,8 @@ class DropNet(pl.LightningModule):
         )
         self.U_embedding = nn.Linear((args.finetuning_hidden_size // 2), self.emb_dim)
 
+        # TODO: WMF를 사용한 값으로 활용할 경우, 해당 데이터는 WMF로 학습된 Item으로 분해된 Item X Hidden 값 그대로가 됩니다.
+        # 즉 임베딩이 없어야 한다는 말입니다.
         self.Vin = nn.Embedding(num_embeddings=self.n_items, embedding_dim=self.emb_dim)
         self.v_dense_batch_fc_tanh = nn.Sequential(
             nn.Linear(self.emb_dim + args.n_items_features, args.finetuning_hidden_size),
@@ -95,6 +99,8 @@ class DropNet(pl.LightningModule):
         Uu = self.U_embedding(u_last)
         Vv = self.V_embedding(v_last)
 
+        # TODO: 딥러닝으로 유저와 아이템 임베딩을 학습시킨 경우, 하위의 동작은 단순 multiply가 아닌, 실제로 딥러닝을 통해 WMF의 R 매트릭스를 찾아가는 과정이 되어야 합니다.
+        # 또한 FineTuning 관점에서 접근해야하므로, 해당 Layer는 기존 학습한 모델에서 불러온 값으로 초기화 되어야 합니다.
         output = torch.multiply(Uu, Vv)
         return output
 
@@ -122,10 +128,10 @@ class DropNet(pl.LightningModule):
         tot_items = torch.tensor(list(range(self.n_items)), dtype=torch.long, device=self.device)
         for valid_user in valid_unique_users:
             valid_user_ids = torch.full((self.n_items,), valid_user, device=self.device)
-            # total_user_contents: onehot으로 sparse하게 처리된, 유저 정보 2차원 베열(유저순서인덱스X특징)
+            # TODO total_user_contents: onehot으로 sparse하게 처리된, 유저 정보 2차원 베열(유저순서인덱스X특징)
             # 유저정보를 item만큼 repeat하는 이유는, 전체 아이템에 대한 유저는 동일하기 때문입니다.
             valid_user_info = self.total_user_contents[valid_user].repeat(self.n_items, 1)
-            # total_item_contents: onehot으로 sparse하게 처리된, 아이템 정보 2차원 베열(아이템번호인덱스X특징)
+            # TODO total_item_contents: onehot으로 sparse하게 처리된, 아이템 정보 2차원 베열(아이템번호인덱스X특징)
             # 모든 아이템에 대해 한번씩 이사람에게 추천해줄 상대적 값을 출력해야하므로 item정보는 전부다 들어갑니다.
             eval_output = (
                 self(valid_user_ids, tot_items, valid_user_info.cuda(), self.total_item_contents.cuda())

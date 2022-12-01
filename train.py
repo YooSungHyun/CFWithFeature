@@ -18,6 +18,7 @@ def main(hparams):
 
     ncf_datamodule = DropNetDataModule(hparams)
     model = DropNet(hparams)
+    # TODO 딥러닝 임베딩을 불러올 요량이라면, 모델경로는 그냥 하드코딩으로 처리합니다.
     model.load_state_dict(
         torch.load(
             "",
